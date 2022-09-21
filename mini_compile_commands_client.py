@@ -16,7 +16,7 @@ compile_commands = []
 for c_file in c_files:
     compile_commands.append(
         { 'directory' : directory,
-          'command' : ' '.join(command),
+          'arguments' : command,
           'file' : c_file
         }
     )
