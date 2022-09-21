@@ -36,6 +36,7 @@ class Server(UnixStreamServer):
     def server_close(self):
         with open(compile_commands_output, 'w') as f:
             f.write(json.dumps(self.compile_commands))
+            f.write('\n')
 
         super().server_close()
 
