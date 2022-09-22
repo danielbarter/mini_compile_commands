@@ -1,4 +1,4 @@
-@mini_compile_commands_client@ $(pwd) \
+@mini-compile-commands-client@ $(pwd) \
    ${extraBefore+"${extraBefore[@]}"} \
    ${params+"${params[@]}"} \
    ${extraAfter+"${extraAfter[@]}"}
