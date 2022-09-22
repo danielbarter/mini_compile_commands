@@ -1,4 +1,4 @@
-#! /run/current-system/sw/bin/python
+#! @python@
 
 import socket
 import sys

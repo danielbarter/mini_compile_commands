@@ -1,4 +1,4 @@
-#! /run/current-system/sw/bin/python
+#! @python@
 
 from socketserver import UnixStreamServer, StreamRequestHandler
 from time import localtime, strftime
