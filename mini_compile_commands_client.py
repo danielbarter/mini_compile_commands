@@ -1,4 +1,4 @@
-#! @python@
+#! @python@/bin/python
 
 import socket
 import sys
