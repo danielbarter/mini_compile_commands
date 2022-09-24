@@ -22,9 +22,14 @@ for c_file in c_files:
     )
 
 with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as client:
-    client.connect(unix_socket_file)
+    try:
+        client.connect(unix_socket_file)
 
-    for i in range(3):
-        client.send(pickle.dumps(compile_commands))
+        for i in range(3):
+            client.send(pickle.dumps(compile_commands))
 
-    client.close()
+        client.close()
+
+    except FileNotFoundError:
+        print("Error: can't find {}. Is mini_compile_commands_server.py running?"
+              .format(unix_socket_file))
