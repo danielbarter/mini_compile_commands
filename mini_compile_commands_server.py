@@ -35,12 +35,13 @@ class Server(UnixStreamServer):
 
     def server_close(self):
         with open(compile_commands_output, 'w') as f:
-            f.write(json.dumps(self.compile_commands))
+            f.write(json.dumps(self.compile_commands, indent=4))
             f.write('\n')
 
         super().server_close()
 
 server = Server(unix_socket_file, Handler)
+print("awaiting compile commands...")
 
 def signal_handler(sig, frame):
     print('')
