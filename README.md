@@ -1,6 +1,6 @@
 # Mini Compile Commands
 
-Mini compile commands instruments the compiler wrappers in nixpkgs to generate `compile_commands.json` files. Using a version of nixpkgs which has mini compile commands, it can be includede in an environment as follows:
+Mini compile commands instruments the compiler wrappers in nixpkgs to generate `compile_commands.json` files. Using a version of nixpkgs which has mini compile commands, it can be included in an environment as follows:
 
 ```
 with (import <nixpkgs> {});
