@@ -13,5 +13,4 @@ when the compiler is invoked, it will send a message to `mini_compile_commands_s
 
 https://user-images.githubusercontent.com/8081722/192353380-5c417134-1cf5-4f60-97c1-386f24b0d4f7.mp4
 
-
-
+Here is a more detailed example of using mini compile commands to generate compile command information for the nix package manager itself: https://youtu.be/FB1aLN_MUuY
