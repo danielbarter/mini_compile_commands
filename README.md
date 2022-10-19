@@ -4,13 +4,14 @@ Mini compile commands instruments the compiler wrappers in nixpkgs to generate `
 
 ```
 with (import <nixpkgs> {});
-let llvm = llvmPackages_latest;
-in (mkShell.override {stdenv = ( mini-compile-commands.wrap llvm.stdenv );}) {
+(mkShell.override {stdenv = ( mini-compile-commands.wrap clang13Stdenv );}) {
    buildInputs = [ cmake gtest ];
 }
 ```
+
+To avoid cyclical dependency issues, it is best to use `clangXStdenv` or `gccXStdenv` (rather than `stdenv`) as the base.
+
 when the compiler is invoked, it will send a message to `mini_compile_commands_server.py`:
 
 https://user-images.githubusercontent.com/8081722/192353380-5c417134-1cf5-4f60-97c1-386f24b0d4f7.mp4
 
-Here is a more detailed example of using mini compile commands to generate compile command information for the nix package manager itself: https://youtu.be/FB1aLN_MUuY
