@@ -9,9 +9,7 @@ with (import <nixpkgs> {});
 }
 ```
 
-To avoid cyclical dependency issues, it is best to use `clangXStdenv` or `gccXStdenv` (rather than `stdenv`) as the base.
-
-when the compiler is invoked, it will send a message to `mini_compile_commands_server.py`:
+To avoid cyclical dependency issues, it is best to use `clangXStdenv` or `gccXStdenv` (rather than `stdenv`) as the base. When the compiler is invoked, it will send a message to `mini_compile_commands_server.py`:
 
 https://user-images.githubusercontent.com/8081722/192353380-5c417134-1cf5-4f60-97c1-386f24b0d4f7.mp4
 
