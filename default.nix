@@ -23,14 +23,8 @@ rec {
   # instead, wrap your standard environment: ( mini-compile-commands.wrap stdenv )
   package = stdenv.mkDerivation rec {
     pname = "mini_compile_commands";
-    version = "0.2";
 
-    src = fetchFromGitHub {
-      owner = "danielbarter";
-      repo = "mini_compile_commands";
-      rev = "v${version}";
-      sha256 = "0yDocHY4+DsakFXDnrCa/d4ZTGxjFCW68zB8F5GsRuo=";
-    };
+    src = ./.;
 
     # specifying python environment variable so that it gets substituted
     # during install phase
@@ -44,13 +38,5 @@ rec {
         chmod +x $out/bin/$file
       done
     '';
-
-    meta = with lib; {
-      homepage = "https://github.com/danielbarter/mini_compile_commands";
-      description = "Generate compile_commands.json using nixpkgs infrastructure";
-      license = licenses.gpl3;
-      maintainers = with maintainers; [ danielbarter ];
-      platforms = platforms.linux;
-    };
   };
 }
