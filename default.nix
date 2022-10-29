@@ -21,8 +21,8 @@ rec {
 
   # mini compile commands package. You probably don't want to use this directly.
   # instead, wrap your standard environment: ( mini-compile-commands.wrap stdenv )
-  package = stdenv.mkDerivation rec {
-    pname = "mini_compile_commands";
+  package = stdenv.mkDerivation {
+    name = "mini_compile_commands";
 
     src = ./.;
 
