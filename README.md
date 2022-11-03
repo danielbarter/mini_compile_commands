@@ -4,7 +4,7 @@ Mini compile commands instruments the compiler wrappers in nixpkgs to generate `
 
 ```
 with import <nixpkgs> {};
-let mcc-env = (callPackage <this_repo>/generator.nix {}).wrap stdenv;
+let mcc-env = (callPackage <this_repo> {}).wrap stdenv;
 in (mkShell.override {stdenv = mcc-env;}) {
    buildInputs = [ cmake gtest ];
 }
@@ -16,12 +16,12 @@ https://user-images.githubusercontent.com/8081722/192353380-5c417134-1cf5-4f60-9
 
 ## Mini Compile Commands and flakes
 
-If your project is flake based, add `mini-compile-commands.url = github:danielbarter/mini_compile_commands;` to your inputs and `mini-compile-commands` as an argument to your outputs. Then the above development shell output would be specified as
+If your project is flake based, add `mini-compile-commands = { url = github:danielbarter/mini_compile_commands; flake = false;};` to your inputs and `mini-compile-commands` as an argument to your outputs. Then the above development shell output would be specified as
 
 ```
 devShell.x86_64-linux =
   with import nixpkgs { system = "x86_64-linux"; };
-  let mcc-env = (callPackage mini-compile-commands.generator {}).wrap stdenv;
+  let mcc-env = (callPackage mini-compile-commands {}).wrap stdenv;
   in (mkShell.override {stdenv = mcc-env;}) {
     buildInputs = [ cmake gtest ];
   };
@@ -32,7 +32,7 @@ devShell.x86_64-linux =
 Mini compile commands can be used to generate a `compile_commands.json` for the linux kernel:
 
 ```
-nix-shell -E 'with import <nixpkgs> {}; let mcc-env = (callPackage <this_repo>/generator.nix {}).wrap stdenv; in linux.override { stdenv = mcc-env; }'
+nix-shell -E 'with import <nixpkgs> {}; let mcc-env = (callPackage <this_repo> {}).wrap stdenv; in linux.override { stdenv = mcc-env; }'
 ```
 
 As demonstrated in the above video, create two shells. In one, run `mini_compile_commands_server.py compile_commands.json` and in the other, run your build command.
