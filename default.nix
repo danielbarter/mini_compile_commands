@@ -31,7 +31,7 @@ rec {
     installPhase = ''
       mkdir -p $out/bin
       export mini_compile_commands_client=$out/bin/mini_compile_commands_client.py
-      for file in $(ls $src); do
+      for file in *.py cc-wrapper-hook; do
         substituteAll $src/$file $out/bin/$file
         chmod +x $out/bin/$file
       done
