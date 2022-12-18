@@ -8,12 +8,17 @@ import sys
 import pickle
 import json
 
-if len(sys.argv) != 2:
+if len(sys.argv) == 1:
+    compile_commands_output = "compile_commands.json"
+
+elif len(sys.argv) == 2:
+    compile_commands_output = sys.argv[1]
+
+elif len(sys.argv) > 2:
     print("usage: mini_compile_commands_client.py compile_commands.json")
     sys.exit(1)
 
 unix_socket_file = "/tmp/mini_compile_commands_unix_socket"
-compile_commands_output = sys.argv[1]
 
 def log_message(*args, **kwargs):
     print(

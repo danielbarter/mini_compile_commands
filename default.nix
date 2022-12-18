@@ -1,5 +1,6 @@
 { stdenv
 , python3Minimal
+, lib
 }:
 
 rec {
@@ -7,7 +8,21 @@ rec {
   # compile commands generation functionality
   wrap = env:
     let
-      hook = "ln -s ${package}/bin/cc-wrapper-hook $out/nix-support/cc-wrapper-hook";
+      # currently, gcc is bundled with the C++ standard library and runtime libraries
+      # so it is able to find them automatically. This is a hack to explicitly pass
+      # then as command line arguments. Eventually, the plan is that these libraries will
+      # be split out: https://github.com/NixOS/nixpkgs/issues/132340. Once that happens,
+      # this hack will no longer be needed (and will no longer work)
+      gcc-hack = lib.optionalString env.cc.isGNU ''
+           libcxxflags=$out/nix-support/libcxx-cxxflags
+           libcflags=$out/nix-support/libc-cflags
+           echo -isystem ${env.cc.cc}/include/c++/${env.cc.cc.version} >> $libcxxflags
+           echo -isystem ${env.cc.cc}/include/c++/${env.cc.cc.version}/${env.hostPlatform.config} >> $libcxxflags
+           echo -isystem ${env.cc.cc}/lib/gcc/${env.hostPlatform.config}/${env.cc.cc.version}/include >> $libcflags
+      '';
+      hook = ''
+           ln -s ${package}/bin/cc-wrapper-hook $out/nix-support/cc-wrapper-hook
+      '' + gcc-hack;
     in
       env.override (old: {
         cc = old.cc.overrideAttrs (final: previous: {
