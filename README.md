@@ -36,3 +36,8 @@ nix-shell -E 'with import <nixpkgs> {}; let mcc-env = (callPackage <this_repo> {
 ```
 
 As demonstrated in the above video, create two shells. In one, run `mini_compile_commands_server.py compile_commands.json` and in the other, run your build command.
+
+
+## Testing
+
+There are tests for `gcc` and `clang` in `tests/gcc` and `tests/clang` respectively. In either of these directories, running `nix-shell` will generate a `compile_commands.json`. To test if things are working, open `test.cc` and try and jump into the `iostream` header.
