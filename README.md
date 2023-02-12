@@ -27,7 +27,7 @@ devShell.x86_64-linux =
   };
 ```
 
-## Example
+## Examples
 
 Mini compile commands can be used to generate a `compile_commands.json` for the linux kernel:
 
@@ -35,8 +35,15 @@ Mini compile commands can be used to generate a `compile_commands.json` for the 
 nix-shell -E 'with import <nixpkgs> {}; let mcc-env = (callPackage <this_repo> {}).wrap stdenv; in linux.override { stdenv = mcc-env; }'
 ```
 
-As demonstrated in the above video, create two shells. In one, run `mini_compile_commands_server.py compile_commands.json` and in the other, run your build command.
+As demonstrated in the above video, create two shells. In one, run `mini_compile_commands_server.py compile_commands.json` and in the other, run `genericBuild`.
 
+For certain packages (like those included in `python3Packages`), there is currently no easy way to override the standard environment. To use mini compile commands for these packages, we can override the standard environment for all nixpkgs as follows:
+
+```
+nix-build -E 'with import <nixpkgs> { config.replaceStdenv = ({ pkgs }: (pkgs.callPackage /home/danielbarter/mini_compile_commands {}).wrap pkgs.stdenv);}; python3Packages.pybind11'
+```
+
+Warning: This requires a huge amount of rebuilding.
 
 ## Testing
 
