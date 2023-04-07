@@ -51,7 +51,7 @@ There are tests for `gcc` and `clang` in `tests/gcc` and `tests/clang` respectiv
 
 ## Build input hook
 
-It is possible to use mini compile commands to generate a `compile_commands.json` while building a derivation. This involves using a wrapped standard standard environment and adding a hook to the buildInputs:
+It is possible to use mini compile commands to generate a `compile_commands.json` while building a derivation. This involves using a wrapped standard standard environment and adding a hook to the `buildInputs`:
 ```
 with import <nixpkgs> {};
 let mcc-env = (callPackage <this_repo> {}).wrap stdenv;
