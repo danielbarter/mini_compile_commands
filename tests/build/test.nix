@@ -11,6 +11,7 @@ in (hello.override { stdenv = mcc-env; }).overrideAttrs
     startMiniCompileCommandsServer = ''
     mini_compile_commands_server.py &
     MINI_COMPILE_COMMANDS_PID=$!
+    SERVER_DIR=$(pwd)
     sleep 1
     '';
 
@@ -22,7 +23,7 @@ in (hello.override { stdenv = mcc-env; }).overrideAttrs
     stopMiniCompileCommandsServer = ''
     kill -s SIGINT $MINI_COMPILE_COMMANDS_PID
     wait $MINI_COMPILE_COMMANDS_PID
-    mv compile_commands.json $out
+    mv "$SERVER_DIR"/compile_commands.json $out
     '';
 
   })
