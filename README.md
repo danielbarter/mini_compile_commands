@@ -48,3 +48,17 @@ Warning: This requires a huge amount of rebuilding.
 ## Testing
 
 There are tests for `gcc` and `clang` in `tests/gcc` and `tests/clang` respectively. In either of these directories, running `nix-shell` will generate a `compile_commands.json`. To test if things are working, open `test.cc` (make sure your editor can locate clangd) and try and jump into the `iostream` header.
+
+## Build input hook
+
+It is possible to use mini compile commands to generate a `compile_commands.json` while building a derivation. This involves using a wrapped standard standard environment and adding a hook to the buildInputs:
+```
+with import <nixpkgs> {};
+let mcc-env = (callPackage <this_repo> {}).wrap stdenv;
+    mcc-hook = (callPackage <this_repo> {}).hook;
+in (hello.override { stdenv = mcc-env; }).overrideAttrs
+  (finalAttrs: previousAttrs: {
+    buildInputs = (previousAttrs.buildInputs or []) ++ [ mcc-hook ];
+  })
+```
+Running `nix-build` on this derivation will generate a `compile_commands.json` and move it into `$out`. Keep in mind that `compile_commands.json` files are not generally relocatable relative to source location, so to use the result, you will need to store your source in the same place that it was when it was built (usually `/build`). This is not particularly convenient, so for actual development (rather than just recording compile actions) we recommend that the project be used interactively.
