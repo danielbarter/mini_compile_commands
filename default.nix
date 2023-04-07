@@ -1,6 +1,7 @@
 { stdenv
 , python3Minimal
 , lib
+, makeSetupHook
 }:
 
 rec {
@@ -20,17 +21,21 @@ rec {
            echo -isystem ${env.cc.cc}/include/c++/${env.cc.cc.version}/${env.hostPlatform.config} >> $libcxxflags
            echo -isystem ${env.cc.cc}/lib/gcc/${env.hostPlatform.config}/${env.cc.cc.version}/include >> $libcflags
       '';
-      hook = ''
+      cc-hook = ''
            ln -s ${package}/bin/cc-wrapper-hook $out/nix-support/cc-wrapper-hook
       '' + gcc-hack;
     in
       env.override (old: {
         cc = old.cc.overrideAttrs (final: previous: {
-          installPhase = previous.installPhase or "" + hook;
+          installPhase = previous.installPhase or "" + cc-hook;
         });
         extraBuildInputs = old.extraBuildInputs or [] ++ [ package ];
         allowedRequisites = null;
       });
+
+  # hook which will generate a compile_commands.json while building a derivation
+  hook = makeSetupHook
+    { name = "mini-compile-commands-hook"; } ./mini-compile-commands-hook;
 
   # mini compile commands package. You probably don't want to use this directly.
   # instead, wrap your standard environment: ( mini-compile-commands.wrap stdenv )

@@ -1,0 +1,15 @@
+startMiniCompileCommandsServer() {
+    mini_compile_commands_server.py & # spawn server as a background job
+    MINI_COMPILE_COMMANDS_PID=$!      # extract server pid
+    SERVER_DIR=$(pwd)                 # extract server working directory
+    sleep 1                           # wait for server to startup
+}
+
+stopMiniCompileCommandsServer() {
+    kill -s SIGINT $MINI_COMPILE_COMMANDS_PID          # kill server
+    wait $MINI_COMPILE_COMMANDS_PID                    # wait for server to shutdown
+    mv "$SERVER_DIR"/compile_commands.json $out        # move json to output
+}
+
+preConfigureHooks+=(startMiniCompileCommandsServer)
+postFixupHooks+=(stopMiniCompileCommandsServer)
