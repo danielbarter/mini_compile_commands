@@ -40,7 +40,7 @@ As demonstrated in the above video, create two shells. In one, run `mini_compile
 For certain packages (like those included in `python3Packages`), there is currently no easy way to override the standard environment. To use mini compile commands for these packages, we can override the standard environment for all nixpkgs as follows:
 
 ```
-nix-build -E 'with import <nixpkgs> { config.replaceStdenv = ({ pkgs }: (pkgs.callPackage /home/danielbarter/mini_compile_commands {}).wrap pkgs.stdenv);}; python3Packages.pybind11'
+nix-build -E 'with import <nixpkgs> { config.replaceStdenv = ({ pkgs }: (pkgs.callPackage <this_repo> {}).wrap pkgs.stdenv);}; python3Packages.pybind11'
 ```
 
 Warning: This requires a huge amount of rebuilding.
@@ -61,4 +61,4 @@ in (hello.override { stdenv = mcc-env; }).overrideAttrs
     buildInputs = (previousAttrs.buildInputs or []) ++ [ mcc-hook ];
   })
 ```
-Running `nix-build` on this derivation will generate a `compile_commands.json` and move it into `$out`. Keep in mind that `compile_commands.json` files are not generally relocatable relative to source location, so to use the result, you will need to store your source in the same place that it was when it was built (usually `/build`). This is not particularly convenient, so for actual development (rather than just recording compile actions) we recommend that the project be used interactively.
+Running `nix-build` on this derivation will generate a `compile_commands.json` and move it into `$out`. As explained in [the compile commands specification](https://clang.llvm.org/docs/JSONCompilationDatabase.html), each entry contains a `directory` attribute which is the absolute path of the directory from which the compiler invocation occurred. As a result, to use this generated json with `clangd`, the source code needs to be located in the same place as during the nix build (typically `/build`). Since this is inconvenient, we recommend using mini compile commands interactively.
