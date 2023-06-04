@@ -1,5 +1,5 @@
 with import ( builtins.fetchTarball {
-  url = "https://github.com/NixOS/nixpkgs/archive/refs/tags/22.11.tar.gz";
+  url = "https://github.com/NixOS/nixpkgs/archive/refs/tags/23.05.tar.gz";
   }) {};
 let mcc-env = (callPackage ../.. {}).wrap stdenv;
 in (mkShell.override {stdenv = mcc-env;}) {
