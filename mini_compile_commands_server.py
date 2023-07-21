@@ -35,7 +35,18 @@ class Handler(StreamRequestHandler):
 class Server(UnixStreamServer):
 
     def __init__(self, server_address, RequestHandlerClass):
-        super().__init__(server_address, RequestHandlerClass)
+        try:
+            super().__init__(server_address, RequestHandlerClass)
+        except:
+            raise Exception(
+                f'''
+                Failed to initialize the server. This is most likely happening
+                because the unix socket file already exists. Either
+                1. mini_compile_commands_server.py shut down abnormally at some point
+                2. there is already a mini_compile_commands_server.py instance running
+                Remove {unix_socket_file} and try again
+                '''
+            )
         self.compile_commands = []
 
     def server_close(self):
