@@ -52,6 +52,7 @@ There are tests for `gcc` and `clang` in `tests/gcc` and `tests/clang` respectiv
 ## Build input hook
 
 It is possible to use mini compile commands to generate a `compile_commands.json` while building a derivation. This involves using a wrapped standard standard environment and adding a hook to the `buildInputs`:
+
 ```
 with import <nixpkgs> {};
 let mcc-env = (callPackage <this_repo> {}).wrap stdenv;
@@ -61,4 +62,5 @@ in (hello.override { stdenv = mcc-env; }).overrideAttrs
     buildInputs = (previousAttrs.buildInputs or []) ++ [ mcc-hook ];
   })
 ```
+
 Running `nix-build` on this derivation will generate a `compile_commands.json` and move it into `$out`. As explained in [the compile commands specification](https://clang.llvm.org/docs/JSONCompilationDatabase.html), each entry contains a `directory` attribute which is the absolute path of the directory from which the compiler invocation occurred. To use this generated json with `clangd`, the source code needs to be located in the same place as during the nix build (typically `/build`). Since this is inconvenient, we recommend using mini compile commands interactively.

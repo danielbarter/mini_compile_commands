@@ -1,0 +1,11 @@
+{
+  "eval": {
+    "depth": 0,
+    "target": {
+      "args": ["-f", "./nixd-entry.nix"],
+      "installable": "mcc-env"
+    },
+    "workers": 1
+  },
+  "options": { "enable": false }
+}

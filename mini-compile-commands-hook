@@ -1,15 +1,25 @@
+# where to put the output compile_commands.json
+if [[ -n "${MCC_BUILD_DIR-}" ]]; then
+	MCC_COMPILE_COMMANDS="$MCC_BUILD_DIR/compile_commands.json"
+else
+	MCC_COMPILE_COMMANDS="$out/compile_commands.json"
+fi
+
 startMiniCompileCommandsServer() {
-    mini_compile_commands_server.py & # spawn server as a background job
-    MINI_COMPILE_COMMANDS_PID=$!      # extract server pid
-    SERVER_DIR=$(pwd)                 # extract server working directory
-    sleep 1                           # wait for server to startup
+	mini_compile_commands_server.py "$MCC_COMPILE_COMMANDS" & # spawn server as a background job
+	MINI_COMPILE_COMMANDS_PID=$!                              # extract server pid
+	sleep 1                                                   # wait for server to startup
 }
 
-stopMiniCompileCommandsServer() {
-    kill -s SIGINT $MINI_COMPILE_COMMANDS_PID          # kill server
-    wait $MINI_COMPILE_COMMANDS_PID                    # wait for server to shutdown
-    mv "$SERVER_DIR"/compile_commands.json $out        # move json to output
+cleanAndStopMiniCompileCommandsServer() {
+	if [[ -n "${MCC_BUILD_DIR-}" ]]; then
+		mini_compile_commands_clean.py "$MCC_BUILD_DIR"
+		export noDumpEnvVars=1
+	fi
+
+	kill -s SIGINT $MINI_COMPILE_COMMANDS_PID # kill server
+	wait $MINI_COMPILE_COMMANDS_PID           # wait for server to shutdown
 }
 
 preConfigureHooks+=(startMiniCompileCommandsServer)
-postFixupHooks+=(stopMiniCompileCommandsServer)
+postInstallHooks+=(cleanAndStopMiniCompileCommandsServer)
