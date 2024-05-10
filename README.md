@@ -51,16 +51,25 @@ There are tests for `gcc` and `clang` in `tests/gcc` and `tests/clang` respectiv
 
 ## Build input hook
 
-It is possible to use mini compile commands to generate a `compile_commands.json` while building a derivation. This involves using a wrapped standard standard environment and adding a hook to the `buildInputs`:
+It is possible to use mini compile commands to generate a `compile_commands.json` while building a derivation. This works by building directly in a subdirectory of `$out` or some other `$custom-output` (so that `compile_commands.json` contains valid paths).
 
-```
-with import <nixpkgs> {};
-let mcc-env = (callPackage <this_repo> {}).wrap stdenv;
-    mcc-hook = (callPackage <this_repo> {}).hook;
-in (hello.override { stdenv = mcc-env; }).overrideAttrs
+Using this involves using a wrapped standard standard environment and setting `MCC_BUILD_DIR`:
+
+```nix
+with import <nixpkgs> {}; let
+  mcc-env = (callPackage <this_repo> {}).wrap stdenv;
+  mcc-hook = (callPackage <this_repo> {}).hook;
+in
+  (hello.override {stdenv = mcc-env;}).overrideAttrs
   (finalAttrs: previousAttrs: {
-    buildInputs = (previousAttrs.buildInputs or []) ++ [ mcc-hook ];
+    # pick any path
+    MCC_BUILD_DIR = "$out/${finalAttrs.pname}-${finalAttrs.version}-src";
+
+    # can also put in another output
+    # MCC_BUILD_DIR = "$dev";
+    # outputs = ["out" "dev"];
   })
 ```
 
-Running `nix-build` on this derivation will generate a `compile_commands.json` and move it into `$out`. As explained in [the compile commands specification](https://clang.llvm.org/docs/JSONCompilationDatabase.html), each entry contains a `directory` attribute which is the absolute path of the directory from which the compiler invocation occurred. To use this generated json with `clangd`, the source code needs to be located in the same place as during the nix build (typically `/build`). Since this is inconvenient, we recommend using mini compile commands interactively.
+Running `nix-build` on this derivation will generate a `compile_commands.json` at `$MCC_BUILD_DIR/compile_commands.json`.
+by default all files other than c and header files are removed in `$MCC_BUILD_DIR`. This can be customized by setting `MCC_KEEP_REGEXP`, which is any python regex.
