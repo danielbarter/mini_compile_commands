@@ -9,7 +9,7 @@ unix_socket_file = "/tmp/mini_compile_commands_unix_socket"
 directory = sys.argv[1]
 command = sys.argv[2::]
 
-c_file_regex = re.compile('.*\.cc$|.*\.c$|.*\.cpp$|.*\.cxx$')
+c_file_regex = re.compile(r'.*\.cc$|.*\.c$|.*\.cpp$|.*\.cxx$')
 c_files = [ word for word in command if c_file_regex.search(word) ]
 compile_commands = []
 
